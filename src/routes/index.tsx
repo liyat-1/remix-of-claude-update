@@ -113,6 +113,44 @@ import propertyImage from "@/assets/hotel-property.jpg";
 import lobbyImage from "@/assets/hotel-lobby.jpg";
 import roomImage from "@/assets/hotel-room.jpg";
 import poolImage from "@/assets/hotel-pool.jpg";
+import brandChainLogo from "@/assets/brand-chain.png";
+import brandGroupLogo from "@/assets/brand-group.png";
+import miniMapImage from "@/assets/mini-map.jpg";
+
+function LiveClock({ timezone, fallback }: { timezone: string; fallback: string }) {
+  const offsetMatch = timezone.match(/UTC\s*([+-]?\d+)/);
+  const offset = offsetMatch ? Number(offsetMatch[1]) : null;
+  const [now, setNow] = useState<Date | null>(null);
+
+  useEffect(() => {
+    const tick = () => setNow(new Date());
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  let time = fallback;
+  let date = "";
+  if (now && offset !== null) {
+    const shifted = new Date(now.getTime() + (offset * 60 + now.getTimezoneOffset()) * 60000);
+    time = shifted.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+    date = shifted.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+  }
+
+  return (
+    <div className="flex items-center gap-3 rounded-xl border border-primary-foreground/15 bg-primary-foreground/10 px-3 py-2 backdrop-blur-sm">
+      <span className="grid size-10 shrink-0 place-items-center rounded-full border border-primary-foreground/25">
+        <Clock3 className="size-5 text-primary-foreground/85" />
+      </span>
+      <span className="min-w-0">
+        <span className="block text-[10px] tracking-[0.11em] text-primary-foreground/60 uppercase">Local time</span>
+        <span className="block font-mono text-[18px] leading-tight font-semibold tabular-nums text-primary-foreground">{time}</span>
+        <span className="block text-[10px] text-primary-foreground/60">{date ? `${date} · ${timezone}` : timezone}</span>
+      </span>
+    </div>
+  );
+}
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
