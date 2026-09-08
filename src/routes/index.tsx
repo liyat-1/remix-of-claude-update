@@ -505,12 +505,21 @@ function HotelWorkspace() {
     doneSteps.includes(s.label) ? { ...s, state: "complete" as const } : s,
   );
 
+  const onboardingOptional = hotel.onboarding?.optional ?? [
+    { label: "Hosted messaging", value: "Enabled" },
+    { label: "Chatbot responses", value: "13/13" },
+    { label: "Users", value: String(hotel.people.emails.length) },
+    { label: "Enabled campaigns", value: hotel.scenario === "churned" ? "-" : "4" },
+    { label: "Domain", value: "mh.directful.com" },
+  ];
+
   const onboardingPct = steps.length
     ? Math.round(
         (steps.filter((s) => s.state === "complete").length / steps.length) *
           100,
       )
     : 0;
+
 
   const connectionRows = [
     { label: "PMS", status: hotel.sync.pmsStatus.status },
