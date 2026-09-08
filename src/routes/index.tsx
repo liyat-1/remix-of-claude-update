@@ -140,7 +140,7 @@ function LiveClock({ timezone, fallback }: { timezone: string; fallback: string 
   return (
     <div className="flex items-center gap-3 rounded-xl border border-primary-foreground/15 bg-primary-foreground/10 px-3 py-2 backdrop-blur-sm">
       <span className="grid size-10 shrink-0 place-items-center rounded-full border border-primary-foreground/25">
-        <Clock className="size-5 text-primary-foreground/85" />
+        <Clock3 className="size-5 text-primary-foreground/85" />
       </span>
       <span className="min-w-0">
         <span className="block text-[10px] tracking-[0.11em] text-primary-foreground/60 uppercase">Local time</span>
