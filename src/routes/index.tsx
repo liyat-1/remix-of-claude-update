@@ -2376,16 +2376,12 @@ function HotelWorkspace() {
               </div>
             ) : null}
 
-            {detail === "onboarding" && hotel.onboarding ? (
+            {detail === "onboarding" ? (
               <div className="space-y-6">
                 <div>
                   <SubTitle>Mandatory steps</SubTitle>
                   <div className="space-y-0.5">
-                    {hotel.onboarding.mandatory
-                      .map((m) =>
-                        doneSteps.includes(m.label) ? { ...m, state: "complete" as const } : m,
-                      )
-                      .map((m) => (
+                    {steps.map((m) => (
                       <Row
                         key={m.label}
                         label={m.label}
@@ -2409,13 +2405,14 @@ function HotelWorkspace() {
                 <div>
                   <SubTitle>Optional</SubTitle>
                   <div className="space-y-0.5">
-                    {hotel.onboarding.optional.map((o) => (
+                    {onboardingOptional.map((o) => (
                       <Row key={o.label} label={o.label} value={o.value} />
                     ))}
                   </div>
                 </div>
               </div>
             ) : null}
+
           </div>
         </DialogContent>
       </Dialog>
