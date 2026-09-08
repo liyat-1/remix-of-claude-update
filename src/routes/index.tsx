@@ -1656,7 +1656,7 @@ function HotelWorkspace() {
                 icon={ListChecks}
                 tone="warning"
                 title="Onboarding"
-                subtitle={hotel.onboarding?.stage ?? "Initial payment stage"}
+                subtitle={hotel.onboarding?.stage ?? (onboardingPct === 100 ? "All steps complete" : "Setup in progress")}
                 action={
                   <Button
                     variant="ghost"
