@@ -505,12 +505,21 @@ function HotelWorkspace() {
     doneSteps.includes(s.label) ? { ...s, state: "complete" as const } : s,
   );
 
+  const onboardingOptional = hotel.onboarding?.optional ?? [
+    { label: "Hosted messaging", value: "Enabled" },
+    { label: "Chatbot responses", value: "13/13" },
+    { label: "Users", value: String(hotel.people.emails.length) },
+    { label: "Enabled campaigns", value: hotel.scenario === "churned" ? "-" : "4" },
+    { label: "Domain", value: "mh.directful.com" },
+  ];
+
   const onboardingPct = steps.length
     ? Math.round(
         (steps.filter((s) => s.state === "complete").length / steps.length) *
           100,
       )
     : 0;
+
 
   const connectionRows = [
     { label: "PMS", status: hotel.sync.pmsStatus.status },
@@ -1647,7 +1656,7 @@ function HotelWorkspace() {
                 icon={ListChecks}
                 tone="warning"
                 title="Onboarding"
-                subtitle={hotel.onboarding?.stage ?? "Initial payment stage"}
+                subtitle={hotel.onboarding?.stage ?? (onboardingPct === 100 ? "All steps complete" : "Setup in progress")}
                 action={
                   <Button
                     variant="ghost"
@@ -2367,16 +2376,12 @@ function HotelWorkspace() {
               </div>
             ) : null}
 
-            {detail === "onboarding" && hotel.onboarding ? (
+            {detail === "onboarding" ? (
               <div className="space-y-6">
                 <div>
                   <SubTitle>Mandatory steps</SubTitle>
                   <div className="space-y-0.5">
-                    {hotel.onboarding.mandatory
-                      .map((m) =>
-                        doneSteps.includes(m.label) ? { ...m, state: "complete" as const } : m,
-                      )
-                      .map((m) => (
+                    {steps.map((m) => (
                       <Row
                         key={m.label}
                         label={m.label}
@@ -2400,13 +2405,14 @@ function HotelWorkspace() {
                 <div>
                   <SubTitle>Optional</SubTitle>
                   <div className="space-y-0.5">
-                    {hotel.onboarding.optional.map((o) => (
+                    {onboardingOptional.map((o) => (
                       <Row key={o.label} label={o.label} value={o.value} />
                     ))}
                   </div>
                 </div>
               </div>
             ) : null}
+
           </div>
         </DialogContent>
       </Dialog>
