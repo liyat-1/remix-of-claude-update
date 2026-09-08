@@ -1281,26 +1281,73 @@ function HotelWorkspace() {
                       <h1 className="max-w-3xl text-[24px] leading-[1.15] font-bold text-primary-foreground lg:text-[26px]">
                         {hotel.name}
                       </h1>
-                      <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-[12px] text-primary-foreground/85">
-                        <span className="flex items-center gap-1.5"><Building className="size-3.5" />{hotel.identity.parentChain}</span>
-                        <span className="flex items-center gap-1.5"><Building2 className="size-3.5" />{hotel.identity.group}</span>
-                        <span className="flex items-center gap-1.5"><BedDouble className="size-3.5" />{hotel.identity.rooms} rooms</span>
-                        <span className="flex items-center gap-1.5"><MapPin className="size-3.5" />{location}</span>
+                      <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                        <div className="flex items-center gap-3 rounded-xl border border-primary-foreground/15 bg-primary-foreground/10 p-3 backdrop-blur-sm">
+                          <span className="grid size-11 shrink-0 place-items-center rounded-lg bg-surface">
+                            <img src={brandChainLogo} alt={`${hotel.identity.parentChain} logo`} loading="lazy" width={816} height={816} className="size-8 object-contain" />
+                          </span>
+                          <span className="min-w-0">
+                            <span className="block text-[10px] tracking-[0.11em] text-primary-foreground/60 uppercase">Brand</span>
+                            <span className="block truncate text-[14px] font-semibold text-primary-foreground">{hotel.identity.parentChain}</span>
+                          </span>
+                        </div>
+
+                        <div className="flex items-center gap-3 rounded-xl border border-primary-foreground/15 bg-primary-foreground/10 p-3 backdrop-blur-sm">
+                          <span className="grid size-11 shrink-0 place-items-center rounded-lg bg-surface">
+                            <img src={brandGroupLogo} alt={`${hotel.identity.group} logo`} loading="lazy" width={816} height={816} className="size-8 object-contain" />
+                          </span>
+                          <span className="min-w-0">
+                            <span className="block text-[10px] tracking-[0.11em] text-primary-foreground/60 uppercase">Management group</span>
+                            <span className="block truncate text-[14px] font-semibold text-primary-foreground">{hotel.identity.group}</span>
+                          </span>
+                        </div>
+
+                        <div className="flex items-center gap-3 rounded-xl border border-primary-foreground/15 bg-primary-foreground/10 p-3 backdrop-blur-sm">
+                          <span className="flex shrink-0 -space-x-3">
+                            {[roomImage, lobbyImage, poolImage].map((src, i) => (
+                              <img
+                                key={i}
+                                src={src}
+                                alt=""
+                                loading="lazy"
+                                className="size-11 rounded-lg border-2 border-foreground object-cover"
+                              />
+                            ))}
+                          </span>
+                          <span className="min-w-0">
+                            <span className="block text-[10px] tracking-[0.11em] text-primary-foreground/60 uppercase">Rooms</span>
+                            <span className="block text-[18px] leading-tight font-bold text-primary-foreground">
+                              {hotel.identity.rooms}
+                              <span className="ml-1 text-[11px] font-medium text-primary-foreground/70">keys</span>
+                            </span>
+                          </span>
+                        </div>
+
+                        <div className="flex items-center gap-3 rounded-xl border border-primary-foreground/15 bg-primary-foreground/10 p-3 backdrop-blur-sm">
+                          <span className="relative size-11 shrink-0 overflow-hidden rounded-lg">
+                            <img src={miniMapImage} alt={`Map of ${location}`} loading="lazy" width={768} height={512} className="h-full w-full object-cover" />
+                            <span className="absolute inset-0 grid place-items-center">
+                              <MapPin className="size-4 text-destructive drop-shadow" />
+                            </span>
+                          </span>
+                          <span className="min-w-0">
+                            <span className="block text-[10px] tracking-[0.11em] text-primary-foreground/60 uppercase">Location</span>
+                            <span className="block truncate text-[14px] font-semibold text-primary-foreground">{location}</span>
+                          </span>
+                        </div>
                       </div>
                     </div>
                     <div className="absolute top-0 right-0 text-foreground">{headerActions()}</div>
                   </div>
-                  <div className="relative flex flex-wrap items-end gap-5">
-                    <div className="grid grid-cols-3 gap-6">
-                      {[["Hotel ID", hotel.identity.hotelId], ["Timezone", hotel.timezone], ["Local time", hotel.localTime]].map(([label, value]) => (
-                        <span key={label} className="min-w-[90px]">
-                          <span className="block text-[10px] text-primary-foreground/60">{label}</span>
-                          <span className="mt-1 block text-[12px] font-semibold text-primary-foreground">{value}</span>
-                        </span>
-                      ))}
-                    </div>
+                  <div className="relative mt-4 flex flex-wrap items-center gap-4">
+                    <LiveClock timezone={hotel.timezone} fallback={hotel.localTime} />
+                    <span className="min-w-[90px]">
+                      <span className="block text-[10px] text-primary-foreground/60">Hotel ID</span>
+                      <span className="mt-1 block text-[13px] font-semibold text-primary-foreground">{hotel.identity.hotelId}</span>
+                    </span>
                     <span className="ml-auto rounded-md bg-surface px-3 py-2 text-[11px] font-medium text-foreground shadow-sm"><span className="mr-1.5 inline-block size-2 rounded-full bg-success" />{lifecycle.sub}</span>
                   </div>
+
                 </div>
               </header>
             </div>
