@@ -1755,54 +1755,67 @@ function HotelWorkspace() {
                 <div
                   className={cn(
                     "mt-3 rounded-xl border p-3.5",
-                    connectionIssues.length
-                      ? "border-warning/25 bg-warning-soft/60"
-                      : "border-border bg-muted/40",
+                    connectionSummary.tone === "failed"
+                      ? "border-danger/25 bg-danger-soft/60"
+                      : connectionSummary.tone === "warning"
+                        ? "border-warning/25 bg-warning-soft/60"
+                        : "border-border bg-muted/40",
                   )}
                 >
                   <div className="flex items-center gap-2">
-                    {connectionIssues.length ? (
+                    {connectionSummary.tone === "failed" ? (
+                      <AlertTriangle className="size-4 shrink-0 text-danger" />
+                    ) : connectionSummary.tone === "warning" ? (
                       <AlertTriangle className="size-4 shrink-0 text-warning" />
-                    ) : (
+                    ) : connectionSummary.tone === "healthy" ? (
                       <Check className="size-4 shrink-0 text-success" />
+                    ) : (
+                      <Plug className="size-4 shrink-0 text-muted-foreground" />
                     )}
                     <span
                       className={cn(
                         "text-[13px] font-semibold",
-                        connectionIssues.length ? "text-warning" : "text-foreground",
+                        connectionSummary.tone === "failed"
+                          ? "text-danger"
+                          : connectionSummary.tone === "warning"
+                            ? "text-warning"
+                            : "text-foreground",
                       )}
                     >
-                      {connectionIssues.length === 0
-                        ? "All connections healthy"
-                        : connectionIssues.length === 1
-                          ? `${connectionIssues[0]!.label} sync failed`
-                          : `${connectionIssues.length} connections need attention`}
+                      {connectionSummary.title}
                     </span>
                   </div>
                   <p className="mt-1.5 text-[13px] leading-snug text-muted-foreground">
                     {checking
                       ? "Checking connections…"
-                      : (checkResult ??
-                        (connectionIssues.length
-                          ? `Last successful sync: never. ${connectionIssues
-                              .map((c) => c.label)
-                              .join(", ")} affected — bookings and availability are impacted.`
-                          : `Everything responded normally · local time ${hotel.localTime}`))}
+                      : (checkResult ?? connectionSummary.body)}
                   </p>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="mt-3 h-9 rounded-lg bg-surface px-3 text-[13px] font-medium shadow-sm"
-                    onClick={runStatusCheck}
-                    disabled={checking}
-                  >
-                    {checking ? (
-                      <Loader2 className="size-4 animate-spin" />
-                    ) : (
+                  {connectionSummary.canCheck ? (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="mt-3 h-9 rounded-lg bg-surface px-3 text-[13px] font-medium shadow-sm"
+                      onClick={runStatusCheck}
+                      disabled={checking}
+                    >
+                      {checking ? (
+                        <Loader2 className="size-4 animate-spin" />
+                      ) : (
+                        <Stethoscope className="size-4" />
+                      )}
+                      Check status
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="mt-3 h-9 rounded-lg bg-surface px-3 text-[13px] font-medium shadow-sm"
+                      disabled
+                    >
                       <Stethoscope className="size-4" />
-                    )}
-                    Check status
-                  </Button>
+                      Nothing to check
+                    </Button>
+                  )}
                 </div>
 
               </CardShell>
