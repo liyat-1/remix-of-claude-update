@@ -1867,7 +1867,7 @@ function HotelWorkspace() {
                   </Button>
                 </div>
                 <div className="grid gap-3 lg:grid-cols-2">
-                  <Panel icon={Building2} title="Property" hint="Rooms, group and stay times">
+                  <Panel icon={Building2} title="Property">
                     <div className="space-y-0.5">
                       <Row icon={Layers} label="Group" value={hotel.identity.group} />
                       <Row icon={BedDouble} label="Rooms" value={hotel.identity.rooms} />
@@ -1876,7 +1876,7 @@ function HotelWorkspace() {
                       <Row icon={Building} label="Parent chain" value={hotel.identity.parentChain} />
                     </div>
                   </Panel>
-                  <Panel icon={Hash} title="Systems & records" hint="Identifiers and connections">
+                  <Panel icon={Hash} title="Systems & records">
                     <div className="space-y-0.5">
                       <Row
                         icon={Hash}
@@ -1939,7 +1939,7 @@ function HotelWorkspace() {
                     </div>
                   </Panel>
 
-                  <Panel icon={Mail} title="Hotel emails" hint="Contacts at the property">
+                  <Panel icon={Mail} title="Hotel emails">
                     {hotel.people.emails.length === 0 ? (
                       <div className="rounded-xl border border-dashed border-border px-4 py-5 text-center">
                         <Muted>No hotel emails added yet.</Muted>
