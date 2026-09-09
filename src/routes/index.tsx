@@ -1183,10 +1183,13 @@ function HotelWorkspace() {
 
   const headerActions = (compact?: boolean) => (
     <div className="flex shrink-0 items-center gap-2">
-      <Button size={compact ? "sm" : "default"} onClick={editHotel}>
-        <Pencil className="size-4" /> Edit hotel
-      </Button>
+      {compact ? (
+        <Button size="sm" onClick={editHotel}>
+          <Pencil className="size-4" /> Edit hotel
+        </Button>
+      ) : null}
       <DropdownMenu>
+
         <DropdownMenuTrigger asChild>
           <Button variant="outline" size="icon" aria-label="More hotel actions">
             <MoreHorizontal className="size-4" />
