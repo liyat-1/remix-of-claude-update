@@ -1588,7 +1588,6 @@ function HotelWorkspace() {
                 icon={Activity}
                 tone="primary"
                 title="Hotel health"
-                subtitle="Feature coverage across the account"
                 action={
                   <Button
                     variant="ghost"
@@ -1648,7 +1647,6 @@ function HotelWorkspace() {
                 icon={Cable}
                 tone={hotel.sync.pmsStatus.status === "healthy" ? "success" : "warning"}
                 title="Connections"
-                subtitle="Integrations and sync state"
                 action={
                   <Button
                     variant="ghost"
@@ -1764,7 +1762,6 @@ function HotelWorkspace() {
                 icon={ListChecks}
                 tone="warning"
                 title="Onboarding"
-                subtitle={hotel.onboarding?.stage ?? (onboardingPct === 100 ? "All steps complete" : "Setup in progress")}
                 action={
                   <Button
                     variant="ghost"
@@ -1914,7 +1911,6 @@ function HotelWorkspace() {
                   <Panel
                     icon={UserRound}
                     title="Account team"
-                    hint="Who looks after this property"
                     action={
                       <Button variant="ghost" size="sm" onClick={editPeople}>
                         Edit
@@ -2007,7 +2003,6 @@ function HotelWorkspace() {
                   <Panel
                     icon={Landmark}
                     title="Legal"
-                    hint="Entity and registration"
                     action={
                       <Button variant="ghost" size="sm" onClick={editLegal}>
                         Edit
@@ -2067,7 +2062,6 @@ function HotelWorkspace() {
                   <Panel
                     icon={Receipt}
                     title="Billing"
-                    hint="Addresses and billing settings"
                     action={
                       hotel.legal ? (
                         <Button variant="ghost" size="sm" onClick={editBilling}>
@@ -2141,7 +2135,6 @@ function HotelWorkspace() {
                   <Panel
                     icon={Gauge}
                     title="Service"
-                    hint="Lifecycle and configuration"
                     action={
                       <Button variant="ghost" size="sm" onClick={editService}>
                         Edit
@@ -2175,7 +2168,6 @@ function HotelWorkspace() {
                   <Panel
                     icon={BadgeCheck}
                     title="Account"
-                    hint="Record details and tags"
                     action={
                       <Button variant="ghost" size="sm" onClick={editAccount}>
                         Edit
