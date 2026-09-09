@@ -1803,6 +1803,10 @@ function HotelWorkspace() {
                 </div>
               </CardShell>
             </div>
+            </>
+            )
+            ) : null}
+
 
             {/* identity — bento card */}
             <div id="identity" className="scroll-mt-[118px] md:col-span-2 xl:col-span-2">
