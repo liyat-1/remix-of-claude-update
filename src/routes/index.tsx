@@ -429,6 +429,9 @@ function HotelWorkspace() {
   /* ---------------- derived ---------------- */
 
   const attention = hotel.health.total - hotel.health.healthy;
+  const otpUnavailable = scenario === "churned" || scenario === "sparse";
+  const statusCheckUnavailable = scenario === "churned";
+
 
   const lifecycle = useMemo(() => {
     if (hotel.service.status === "Churned")
