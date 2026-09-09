@@ -403,15 +403,7 @@ function HotelWorkspace() {
   const hotel = store[scenario];
 
   useEffect(() => {
-    const onScroll = () => {
-      setScrolled(window.scrollY > 220);
-      let current = sectionNav[0]?.id ?? "snapshot";
-      for (const s of sectionNav) {
-        const el = document.getElementById(s.id);
-        if (el && el.getBoundingClientRect().top <= 190) current = s.id;
-      }
-      setActive(current);
-    };
+    const onScroll = () => setScrolled(window.scrollY > 220);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -420,8 +412,11 @@ function HotelWorkspace() {
   const patch = (fn: (h: Hotel) => Hotel) =>
     setStore((s) => ({ ...s, [scenario]: fn(s[scenario]) }));
 
-  const goTo = (id: string) =>
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+  const goTo = (id: string) => {
+    setActive(id);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
 
   const openEdit = (
     title: string,
