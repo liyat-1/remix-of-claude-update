@@ -528,6 +528,58 @@ function HotelWorkspace() {
   ];
   const connectionIssues = connectionRows.filter((r) => r.status !== "healthy");
 
+  const connectionSummary = useMemo(() => {
+    const failed = connectionRows.filter((r) => r.status === "failed");
+    const degraded = connectionRows.filter((r) => r.status === "warning");
+    const notSet = connectionRows.filter((r) => r.status === "neutral");
+    const healthyRows = connectionRows.filter((r) => r.status === "healthy");
+    const names = (rows: { label: string }[]) => rows.map((r) => r.label).join(", ");
+
+    if (hotel.service.status === "Churned")
+      return {
+        tone: "neutral" as Health,
+        title: "Connections disconnected",
+        body: `Service ended ${hotel.service.churnDate ?? "—"}. Integrations were removed, so there is nothing left to sync.`,
+        canCheck: false,
+      };
+
+    if (notSet.length === connectionRows.length)
+      return {
+        tone: "neutral" as Health,
+        title: "Not connected yet",
+        body: "PMS, Booking engine and Proxy have not been set up. They come online during onboarding — nothing is failing.",
+        canCheck: false,
+      };
+
+    if (!failed.length && !degraded.length && !notSet.length)
+      return {
+        tone: "healthy" as Health,
+        title: "All connections healthy",
+        body: `Everything responded normally · local time ${hotel.localTime}`,
+        canCheck: true,
+      };
+
+    const parts: string[] = [];
+    if (failed.length) parts.push(`${failed.length} failing`);
+    if (degraded.length) parts.push(`${degraded.length} degraded`);
+    if (notSet.length) parts.push(`${notSet.length} not set up`);
+    if (healthyRows.length) parts.push(`${healthyRows.length} healthy`);
+
+    const detail: string[] = [];
+    if (failed.length) detail.push(`${names(failed)} failing — bookings and availability are impacted.`);
+    if (degraded.length) detail.push(`${names(degraded)} responding slowly or partially.`);
+    if (notSet.length) detail.push(`${names(notSet)} still to be set up.`);
+    if (hotel.sync.lastBeSync)
+      detail.push(`Last booking engine sync: ${hotel.sync.lastBeSync}.`);
+
+    return {
+      tone: (failed.length ? "failed" : "warning") as Health,
+      title: parts.join(" · "),
+      body: detail.join(" "),
+      canCheck: true,
+    };
+  }, [hotel]);
+
   const allHealthy =
     attention === 0 &&
     connectionIssues.length === 0 &&
