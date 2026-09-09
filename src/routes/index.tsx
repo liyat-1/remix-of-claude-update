@@ -207,12 +207,12 @@ function Row({
   icon?: ComponentType<{ className?: string }>;
 }) {
   return (
-    <div className="flex items-start justify-between gap-6 rounded-lg px-1 py-[7px] transition-colors hover:bg-surface/70">
-      <span className="flex shrink-0 items-center gap-2 pt-px text-[12.5px] text-muted-foreground">
-        {Icon ? <Icon className="size-3.5 shrink-0 text-muted-foreground/60" /> : null}
+    <div className="flex items-start justify-between gap-6 rounded-md px-1 py-[3px] transition-colors hover:bg-surface/70">
+      <span className="flex shrink-0 items-center gap-1.5 pt-px text-[12px] leading-5 text-muted-foreground">
+        {Icon ? <Icon className="size-3 shrink-0 text-muted-foreground/60" /> : null}
         {label}
       </span>
-      <span className="flex min-w-0 items-center gap-1.5 text-right text-[13.5px] font-medium text-foreground">
+      <span className="flex min-w-0 items-center gap-1.5 text-right text-[12.5px] leading-5 font-medium text-foreground">
         {value}
         {action}
       </span>
@@ -527,6 +527,13 @@ function HotelWorkspace() {
     { label: "Proxy", status: hotel.sync.proxy.status },
   ];
   const connectionIssues = connectionRows.filter((r) => r.status !== "healthy");
+
+  const allHealthy =
+    attention === 0 &&
+    connectionIssues.length === 0 &&
+    !hotel.onboarding &&
+    hotel.service.status !== "Churned" &&
+    onboardingPct === 100;
 
   /* ---------------- actions ---------------- */
 
@@ -1548,7 +1555,7 @@ function HotelWorkspace() {
                 </span>
                 <span className="text-[13px] text-muted-foreground">
                   · {hotel.health.healthy}/{hotel.health.total} features · {hotel.sync.pms} synced{" "}
-                  {hotel.sync.lastSync}
+                  {hotel.sync.lastBeSync}
                 </span>
                 <Button
                   variant="ghost"
@@ -1848,7 +1855,8 @@ function HotelWorkspace() {
 
 
             {/* identity — bento card */}
-            <div id="identity" className="scroll-mt-[118px] md:col-span-2 xl:col-span-2">
+            {active === "identity" ? (
+            <div id="identity" className="scroll-mt-[118px] md:col-span-2 xl:col-span-4">
               <Surface className="h-full">
                 <div className="mb-4 flex items-center justify-between">
                   <div className="flex items-center gap-2.5">
@@ -1887,9 +1895,11 @@ function HotelWorkspace() {
                 </div>
               </Surface>
             </div>
+            ) : null}
 
             {/* people — bento card */}
-            <div id="people" className="scroll-mt-[118px] md:col-span-2 xl:col-span-2">
+            {active === "people" ? (
+            <div id="people" className="scroll-mt-[118px] md:col-span-2 xl:col-span-4">
 
               <Surface className="h-full">
                 <div className="mb-4 flex items-center justify-between">
@@ -1981,8 +1991,10 @@ function HotelWorkspace() {
                 </div>
               </Surface>
             </div>
+            ) : null}
 
             {/* legal & billing — bento card */}
+            {active === "legal" ? (
             <div id="legal" className="scroll-mt-[118px] md:col-span-2 xl:col-span-4">
               <Surface className="h-full">
                 <div className="mb-4 flex items-center gap-2.5">
@@ -2113,9 +2125,11 @@ function HotelWorkspace() {
                 </div>
               </Surface>
             </div>
+            ) : null}
 
             {/* service & account — bento card */}
-            <div id="service" className="scroll-mt-[118px] md:col-span-2 xl:col-span-2">
+            {active === "service" ? (
+            <div id="service" className="scroll-mt-[118px] md:col-span-2 xl:col-span-4">
               <Surface className="h-full">
                 <div className="mb-4 flex items-center gap-2.5">
                   <span className="grid size-8 place-items-center rounded-[10px] bg-primary/10 text-primary">
@@ -2237,9 +2251,11 @@ function HotelWorkspace() {
                 </div>
               </Surface>
             </div>
+            ) : null}
 
             {/* links — bento card */}
-            <div id="links" className="scroll-mt-[118px] md:col-span-2 xl:col-span-2">
+            {active === "links" ? (
+            <div id="links" className="scroll-mt-[118px] md:col-span-2 xl:col-span-4">
               <Surface className="h-full">
                 <div className="mb-4 flex items-center gap-2.5">
                   <span className="grid size-8 place-items-center rounded-[10px] bg-primary/10 text-primary">
@@ -2323,6 +2339,7 @@ function HotelWorkspace() {
                 </div>
               </Surface>
             </div>
+            ) : null}
           </div>
         </main>
       </div>
