@@ -14,3 +14,8 @@
 - [x] Wire the utilities menu (features, PMS jobs, links, hotel settings) to the settings screen.
 - [x] Visual check on desktop and mobile.
 - [x] Spec audit vs design doc: added View as client + Demo mode tiles, currency chip confirmed, Campaign registry link, Check hotel status on onboarding card, fatter donut (28px) with clean slice gaps
+- [ ] Replace anchor navigation with content-switching workspace tabs.
+- [ ] Collapse healthy diagnostics into one compact strip while keeping non-healthy states expanded.
+- [ ] Replace duplicate global editing with section-owned editing and a sticky compact action bar.
+- [ ] Add an email quick-action popover, denser data rows, and clear empty/disabled action states.
+- [ ] Verify healthy, onboarding, unhealthy, churned, and sparse states on desktop and mobile.
