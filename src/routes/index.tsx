@@ -207,12 +207,12 @@ function Row({
   icon?: ComponentType<{ className?: string }>;
 }) {
   return (
-    <div className="flex items-start justify-between gap-6 rounded-lg px-1 py-[7px] transition-colors hover:bg-surface/70">
-      <span className="flex shrink-0 items-center gap-2 pt-px text-[12.5px] text-muted-foreground">
-        {Icon ? <Icon className="size-3.5 shrink-0 text-muted-foreground/60" /> : null}
+    <div className="flex items-start justify-between gap-6 rounded-md px-1 py-[3px] transition-colors hover:bg-surface/70">
+      <span className="flex shrink-0 items-center gap-1.5 pt-px text-[12px] leading-5 text-muted-foreground">
+        {Icon ? <Icon className="size-3 shrink-0 text-muted-foreground/60" /> : null}
         {label}
       </span>
-      <span className="flex min-w-0 items-center gap-1.5 text-right text-[13.5px] font-medium text-foreground">
+      <span className="flex min-w-0 items-center gap-1.5 text-right text-[12.5px] leading-5 font-medium text-foreground">
         {value}
         {action}
       </span>
@@ -527,6 +527,13 @@ function HotelWorkspace() {
     { label: "Proxy", status: hotel.sync.proxy.status },
   ];
   const connectionIssues = connectionRows.filter((r) => r.status !== "healthy");
+
+  const allHealthy =
+    attention === 0 &&
+    connectionIssues.length === 0 &&
+    !hotel.onboarding &&
+    hotel.service.status !== "Churned" &&
+    onboardingPct === 100;
 
   /* ---------------- actions ---------------- */
 
@@ -1548,7 +1555,7 @@ function HotelWorkspace() {
                 </span>
                 <span className="text-[13px] text-muted-foreground">
                   · {hotel.health.healthy}/{hotel.health.total} features · {hotel.sync.pms} synced{" "}
-                  {hotel.sync.lastSync}
+                  {hotel.sync.lastBeSync}
                 </span>
                 <Button
                   variant="ghost"
@@ -1581,7 +1588,6 @@ function HotelWorkspace() {
                 icon={Activity}
                 tone="primary"
                 title="Hotel health"
-                subtitle="Feature coverage across the account"
                 action={
                   <Button
                     variant="ghost"
@@ -1641,7 +1647,6 @@ function HotelWorkspace() {
                 icon={Cable}
                 tone={hotel.sync.pmsStatus.status === "healthy" ? "success" : "warning"}
                 title="Connections"
-                subtitle="Integrations and sync state"
                 action={
                   <Button
                     variant="ghost"
@@ -1757,7 +1762,6 @@ function HotelWorkspace() {
                 icon={ListChecks}
                 tone="warning"
                 title="Onboarding"
-                subtitle={hotel.onboarding?.stage ?? (onboardingPct === 100 ? "All steps complete" : "Setup in progress")}
                 action={
                   <Button
                     variant="ghost"
@@ -1848,7 +1852,8 @@ function HotelWorkspace() {
 
 
             {/* identity — bento card */}
-            <div id="identity" className="scroll-mt-[118px] md:col-span-2 xl:col-span-2">
+            {active === "identity" ? (
+            <div id="identity" className="scroll-mt-[118px] md:col-span-2 xl:col-span-4">
               <Surface className="h-full">
                 <div className="mb-4 flex items-center justify-between">
                   <div className="flex items-center gap-2.5">
@@ -1862,7 +1867,7 @@ function HotelWorkspace() {
                   </Button>
                 </div>
                 <div className="grid gap-3 lg:grid-cols-2">
-                  <Panel icon={Building2} title="Property" hint="Rooms, group and stay times">
+                  <Panel icon={Building2} title="Property">
                     <div className="space-y-0.5">
                       <Row icon={Layers} label="Group" value={hotel.identity.group} />
                       <Row icon={BedDouble} label="Rooms" value={hotel.identity.rooms} />
@@ -1871,7 +1876,7 @@ function HotelWorkspace() {
                       <Row icon={Building} label="Parent chain" value={hotel.identity.parentChain} />
                     </div>
                   </Panel>
-                  <Panel icon={Hash} title="Systems & records" hint="Identifiers and connections">
+                  <Panel icon={Hash} title="Systems & records">
                     <div className="space-y-0.5">
                       <Row
                         icon={Hash}
@@ -1887,9 +1892,11 @@ function HotelWorkspace() {
                 </div>
               </Surface>
             </div>
+            ) : null}
 
             {/* people — bento card */}
-            <div id="people" className="scroll-mt-[118px] md:col-span-2 xl:col-span-2">
+            {active === "people" ? (
+            <div id="people" className="scroll-mt-[118px] md:col-span-2 xl:col-span-4">
 
               <Surface className="h-full">
                 <div className="mb-4 flex items-center justify-between">
@@ -1904,7 +1911,6 @@ function HotelWorkspace() {
                   <Panel
                     icon={UserRound}
                     title="Account team"
-                    hint="Who looks after this property"
                     action={
                       <Button variant="ghost" size="sm" onClick={editPeople}>
                         Edit
@@ -1933,7 +1939,7 @@ function HotelWorkspace() {
                     </div>
                   </Panel>
 
-                  <Panel icon={Mail} title="Hotel emails" hint="Contacts at the property">
+                  <Panel icon={Mail} title="Hotel emails">
                     {hotel.people.emails.length === 0 ? (
                       <div className="rounded-xl border border-dashed border-border px-4 py-5 text-center">
                         <Muted>No hotel emails added yet.</Muted>
@@ -1981,8 +1987,10 @@ function HotelWorkspace() {
                 </div>
               </Surface>
             </div>
+            ) : null}
 
             {/* legal & billing — bento card */}
+            {active === "legal" ? (
             <div id="legal" className="scroll-mt-[118px] md:col-span-2 xl:col-span-4">
               <Surface className="h-full">
                 <div className="mb-4 flex items-center gap-2.5">
@@ -1995,7 +2003,6 @@ function HotelWorkspace() {
                   <Panel
                     icon={Landmark}
                     title="Legal"
-                    hint="Entity and registration"
                     action={
                       <Button variant="ghost" size="sm" onClick={editLegal}>
                         Edit
@@ -2055,7 +2062,6 @@ function HotelWorkspace() {
                   <Panel
                     icon={Receipt}
                     title="Billing"
-                    hint="Addresses and billing settings"
                     action={
                       hotel.legal ? (
                         <Button variant="ghost" size="sm" onClick={editBilling}>
@@ -2113,9 +2119,11 @@ function HotelWorkspace() {
                 </div>
               </Surface>
             </div>
+            ) : null}
 
             {/* service & account — bento card */}
-            <div id="service" className="scroll-mt-[118px] md:col-span-2 xl:col-span-2">
+            {active === "service" ? (
+            <div id="service" className="scroll-mt-[118px] md:col-span-2 xl:col-span-4">
               <Surface className="h-full">
                 <div className="mb-4 flex items-center gap-2.5">
                   <span className="grid size-8 place-items-center rounded-[10px] bg-primary/10 text-primary">
@@ -2127,7 +2135,6 @@ function HotelWorkspace() {
                   <Panel
                     icon={Gauge}
                     title="Service"
-                    hint="Lifecycle and configuration"
                     action={
                       <Button variant="ghost" size="sm" onClick={editService}>
                         Edit
@@ -2161,7 +2168,6 @@ function HotelWorkspace() {
                   <Panel
                     icon={BadgeCheck}
                     title="Account"
-                    hint="Record details and tags"
                     action={
                       <Button variant="ghost" size="sm" onClick={editAccount}>
                         Edit
@@ -2237,9 +2243,11 @@ function HotelWorkspace() {
                 </div>
               </Surface>
             </div>
+            ) : null}
 
             {/* links — bento card */}
-            <div id="links" className="scroll-mt-[118px] md:col-span-2 xl:col-span-2">
+            {active === "links" ? (
+            <div id="links" className="scroll-mt-[118px] md:col-span-2 xl:col-span-4">
               <Surface className="h-full">
                 <div className="mb-4 flex items-center gap-2.5">
                   <span className="grid size-8 place-items-center rounded-[10px] bg-primary/10 text-primary">
@@ -2323,6 +2331,7 @@ function HotelWorkspace() {
                 </div>
               </Surface>
             </div>
+            ) : null}
           </div>
         </main>
       </div>
