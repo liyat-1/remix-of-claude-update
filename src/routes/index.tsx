@@ -1535,9 +1535,48 @@ function HotelWorkspace() {
             </div>
 
 
-            {/* operational snapshot — bento row */}
+            {/* operational snapshot */}
+            {active === "snapshot" ? (
+            allHealthy && !healthExpanded ? (
+            <div className="md:col-span-2 xl:col-span-4">
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-2 rounded-2xl border border-success/30 bg-success/5 px-4 py-3">
+                <span className="grid size-7 place-items-center rounded-full bg-success/15 text-success">
+                  <Check className="size-4" />
+                </span>
+                <span className="text-[13.5px] font-semibold text-foreground">
+                  All systems healthy
+                </span>
+                <span className="text-[13px] text-muted-foreground">
+                  · {hotel.health.healthy}/{hotel.health.total} features · {hotel.sync.pms} synced{" "}
+                  {hotel.sync.lastSync}
+                </span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="ml-auto h-8 rounded-full px-3 text-[12px]"
+                  onClick={() => setHealthExpanded(true)}
+                >
+                  Show details <ChevronRight className="size-3.5" />
+                </Button>
+              </div>
+            </div>
+            ) : (
+            <>
+            {allHealthy ? (
+              <div className="md:col-span-2 xl:col-span-4 -mb-2 flex justify-end">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 rounded-full px-3 text-[12px]"
+                  onClick={() => setHealthExpanded(false)}
+                >
+                  Hide details
+                </Button>
+              </div>
+            ) : null}
             {/* health — large */}
-            <div id="snapshot" className="scroll-mt-[118px] md:col-span-2 xl:col-span-2">
+            <div className="md:col-span-2 xl:col-span-2">
+
               <CardShell
                 icon={Activity}
                 tone="primary"
