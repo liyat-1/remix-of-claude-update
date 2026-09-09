@@ -1360,118 +1360,177 @@ function HotelWorkspace() {
               </header>
             </div>
 
-            {/* quick actions — compact bento tiles */}
+            {/* sticky workspace bar — tabs + quick actions */}
             <div className="md:col-span-2 xl:col-span-4">
-              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
-                <ActionTile
-                  icon={Eye}
-                  title="View as client"
-                  description="See the guest-facing product"
-                  onClick={() => window.open(hotel.website, "_blank", "noopener")}
-                />
-                <ActionTile
-                  icon={MonitorPlay}
-                  title="Demo mode"
-                  description={demoMode ? "On · showing sample data" : "Preview with sample data"}
-                  onClick={() => {
-                    setDemoMode((d) => !d);
-                    toast(demoMode ? "Demo mode off" : "Demo mode on", {
-                      description: demoMode
-                        ? "Back to live property data."
-                        : "The property now shows sample data for demos.",
-                    });
-                  }}
-                  className={demoMode ? "border-primary/40 bg-primary/5" : ""}
-                />
-                <ActionTile
-                  icon={Pencil}
-                  title="Edit hotel"
-                  description="Update property information"
-                  onClick={editHotel}
-                />
-                <Popover onOpenChange={(o) => !o && setOtp(null)}>
-                  <PopoverTrigger asChild>
-                    <div>
-                      <ActionTile
-                        icon={KeyRound}
-                        title="Get last OTP"
-                        description="Retrieve latest access code"
-                        onClick={getOtp}
-                      />
-                    </div>
-                  </PopoverTrigger>
-                  <PopoverContent align="start" className="w-60">
-                    <div className="text-[11px] font-semibold text-muted-foreground uppercase">
-                      Last OTP
-                    </div>
-                    <div className="mt-1.5 flex items-center justify-between gap-3">
-                      <span className="font-mono text-[22px] font-semibold text-foreground">
-                        {otp ?? "······"}
-                      </span>
-                      {otp ? <CopyButton value={otp} /> : null}
-                    </div>
-                    <p className="mt-2 text-[12px] text-muted-foreground">Expires in 5 minutes.</p>
-                  </PopoverContent>
-                </Popover>
-                <Popover onOpenChange={(o) => o && runStatusCheck()}>
-                  <PopoverTrigger asChild>
-                    <div>
-                      <ActionTile
-                        icon={Stethoscope}
-                        title="Check hotel status"
-                        description="Run a current health check"
-                      />
-                    </div>
-                  </PopoverTrigger>
-                  <PopoverContent align="start" className="w-72">
-                    {checking ? (
-                      <div className="flex items-center gap-2 text-[13px] text-muted-foreground">
-                        <Loader2 className="size-4 animate-spin" /> Checking hotel status…
-                      </div>
-                    ) : (
-                      <StatusDot
-                        status={attention === 0 ? "healthy" : "warning"}
-                        label={checkResult ?? "Ready to check"}
-                      />
-                    )}
-                  </PopoverContent>
-                </Popover>
-                <ActionTile
-                  icon={Mail}
-                  title="Hotel emails"
-                  description="Open property contacts"
-                  onClick={() => goTo("people")}
-                />
-              </div>
-            </div>
-
-            {/* in-page nav — spans full width */}
-            <div className="md:col-span-2 xl:col-span-4">
-              <nav
+              <div
                 className={cn(
-                  "sticky z-20 rounded-full border border-border bg-surface/95 px-1.5 py-1 shadow-sm backdrop-blur",
+                  "sticky z-20 rounded-2xl border border-border bg-surface/95 px-2 py-2 shadow-sm backdrop-blur",
                   scrolled ? "top-[112px]" : "top-[58px]",
                 )}
               >
-                <div className="flex flex-wrap items-center gap-1">
-                  {sectionNav.map((s) => (
-                    <button
-                      key={s.id}
-                      type="button"
-                      onClick={() => goTo(s.id)}
-                      className={cn(
-                        "rounded-full px-4 py-2 text-[13px] font-medium transition-colors",
-                        active === s.id
-                          ? "bg-primary/10 text-primary"
-                          : "text-muted-foreground hover:bg-muted hover:text-foreground",
-                      )}
+                <div className="flex flex-wrap items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-1">
+                    {sectionNav.map((s) => (
+                      <button
+                        key={s.id}
+                        type="button"
+                        onClick={() => setActive(s.id)}
+                        className={cn(
+                          "rounded-full px-3.5 py-1.5 text-[13px] font-medium transition-colors",
+                          active === s.id
+                            ? "bg-primary/10 text-primary"
+                            : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                        )}
+                      >
+                        {s.label}
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="ml-auto flex flex-wrap items-center gap-1.5">
+                    <Button size="sm" className="h-8" onClick={editHotel}>
+                      <Pencil className="size-3.5" /> Edit hotel
+                    </Button>
+
+                    {otpUnavailable ? (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="h-8"
+                        disabled
+                        title="No OTP history for this hotel"
+                      >
+                        <KeyRound className="size-3.5" /> No OTP history
+                      </Button>
+                    ) : (
+                      <Popover onOpenChange={(o) => (o ? getOtp() : setOtp(null))}>
+                        <PopoverTrigger asChild>
+                          <Button size="sm" variant="outline" className="h-8">
+                            <KeyRound className="size-3.5" /> Last OTP
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent align="end" className="w-60">
+                          <div className="text-[11px] font-semibold text-muted-foreground uppercase">
+                            Last OTP
+                          </div>
+                          <div className="mt-1.5 flex items-center justify-between gap-3">
+                            <span className="font-mono text-[22px] font-semibold text-foreground">
+                              {otp ?? "······"}
+                            </span>
+                            {otp ? <CopyButton value={otp} /> : null}
+                          </div>
+                          <p className="mt-2 text-[12px] text-muted-foreground">
+                            Expires in 5 minutes.
+                          </p>
+                        </PopoverContent>
+                      </Popover>
+                    )}
+
+                    {/* Prototype only — ticket 30282 (live status check) is not shipped yet. */}
+                    {statusCheckUnavailable ? (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="h-8"
+                        disabled
+                        title="Service ended — status checks no longer run"
+                      >
+                        <Stethoscope className="size-3.5" /> Status check off
+                      </Button>
+                    ) : (
+                      <Popover onOpenChange={(o) => o && runStatusCheck()}>
+                        <PopoverTrigger asChild>
+                          <Button size="sm" variant="outline" className="h-8">
+                            <Stethoscope className="size-3.5" /> Check status
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent align="end" className="w-72">
+                          {checking ? (
+                            <div className="flex items-center gap-2 text-[13px] text-muted-foreground">
+                              <Loader2 className="size-4 animate-spin" /> Checking hotel status…
+                            </div>
+                          ) : (
+                            <StatusDot
+                              status={attention === 0 ? "healthy" : "warning"}
+                              label={checkResult ?? "Ready to check"}
+                            />
+                          )}
+                        </PopoverContent>
+                      </Popover>
+                    )}
+
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button size="sm" variant="outline" className="h-8">
+                          <Mail className="size-3.5" /> Emails
+                          {hotel.people.emails.length ? (
+                            <span className="ml-1 rounded-full bg-muted px-1.5 text-[11px] text-muted-foreground">
+                              {hotel.people.emails.length}
+                            </span>
+                          ) : null}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent align="end" className="w-80">
+                        <div className="text-[11px] font-semibold text-muted-foreground uppercase">
+                          Hotel emails
+                        </div>
+                        {hotel.people.emails.length === 0 ? (
+                          <p className="mt-2 text-[12.5px] text-muted-foreground">
+                            No hotel emails on record for this property yet.
+                          </p>
+                        ) : (
+                          <div className="mt-2 space-y-1.5">
+                            {hotel.people.emails.map((e) => (
+                              <div
+                                key={e.email}
+                                className="flex items-center justify-between gap-2 rounded-lg px-1.5 py-1 hover:bg-muted/60"
+                              >
+                                <div className="min-w-0">
+                                  <a
+                                    href={`mailto:${e.email}`}
+                                    className="block truncate text-[13px] font-medium text-foreground hover:text-primary hover:underline"
+                                  >
+                                    {e.email}
+                                  </a>
+                                  <div className="text-[11px] text-muted-foreground">{e.role}</div>
+                                </div>
+                                <CopyButton value={e.email} compact />
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </PopoverContent>
+                    </Popover>
+
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="h-8"
+                      onClick={() => window.open(hotel.website, "_blank", "noopener")}
                     >
-                      {s.label}
-                    </button>
-                  ))}
+                      <Eye className="size-3.5" /> View as client
+                    </Button>
+
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className={cn("h-8", demoMode && "bg-primary/10 text-primary")}
+                      onClick={() => {
+                        setDemoMode((d) => !d);
+                        toast(demoMode ? "Demo mode off" : "Demo mode on", {
+                          description: demoMode
+                            ? "Back to live property data."
+                            : "The property now shows sample data for demos.",
+                        });
+                      }}
+                    >
+                      <MonitorPlay className="size-3.5" /> Demo
+                    </Button>
+                  </div>
                 </div>
-              </nav>
+              </div>
             </div>
+
 
             {/* operational snapshot — bento row */}
             {/* health — large */}
