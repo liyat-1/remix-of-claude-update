@@ -375,6 +375,8 @@ function HotelWorkspace() {
   const [gallery, setGallery] = useState<GalleryImage[]>(initialGallery);
   const [coverId, setCoverId] = useState("exterior");
   const [galleryOpen, setGalleryOpen] = useState(false);
+  const [healthExpanded, setHealthExpanded] = useState(false);
+
 
   const scenario: Scenario = statusScenario[accountStatus] ?? "live";
 
